@@ -11,18 +11,18 @@ MARKER_TOKENS = (MARKER_TOKEN, MARKER_TOKEN_A, MARKER_TOKEN_B, MARKER_TOKEN_C)
 token_filter = lambda m: m.info.marker_type in MARKER_TOKENS
 
 def drive(speed, seconds):
-    R.motors[0].m0.power = speed
-    R.motors[0].m1.power = speed
+    R.motors[1] = speed
+    R.motors[2] = speed
     time.sleep(seconds)
-    R.motors[0].m0.power = 0
-    R.motors[0].m1.power = 0
+    R.motors[1] = 0
+    R.motors[2] = 0
 
 def turn(speed, seconds):
-    R.motors[0].m0.power = speed
-    R.motors[0].m1.power = -speed
+    R.motors[1] = speed
+    R.motors[2] = -speed
     time.sleep(seconds)
-    R.motors[0].m0.power = 0
-    R.motors[0].m1.power = 0
+    R.motors[1] = 0
+    R.motors[2] = 0
 
 state = SEARCHING
 

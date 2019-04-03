@@ -3,7 +3,7 @@ from __future__ import division
 import threading
 import pygame
 
-from .arenas import PiratePlunderArena, CTFArena, SunnySideUpArena, ABCArena
+from .arenas import PiratePlunderArena, CTFArena, SunnySideUpArena, ABCArena, HillsRoadArena
 from .display import Display
 
 DEFAULT_GAME = 'pirate-plunder'
@@ -12,6 +12,7 @@ GAMES = {'pirate-plunder': PiratePlunderArena,
          'ctf': CTFArena,
          'sunny-side-up': SunnySideUpArena,
          'abc': ABCArena,
+         'hillsroad': HillsRoadArena
         }
 
 class Simulator(object):

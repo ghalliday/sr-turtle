@@ -125,10 +125,10 @@ class Arena(object):
                             count = MARKERS_PER_WALL, start = MARKERS_PER_WALL, angle = pi)
         # Bottom wall
         self._populate_wall(left = (self.right, self.bottom), right = (self.left, self.bottom),
-                            count = MARKERS_PER_WALL, start = 2*MARKERS_PER_WALL, angle = pi / 2)
+                            count = MARKERS_PER_WALL, start = 2*MARKERS_PER_WALL, angle = -pi / 2)
         # Top wall
         self._populate_wall(left = (self.left, self.top), right = (self.right, self.top),
-                            count = MARKERS_PER_WALL, start = 0, angle = 3*pi / 2)
+                            count = MARKERS_PER_WALL, start = 0, angle = pi / 2)
 
     def _init_physics(self):
         self._physics_world = pypybox2d.world.World(gravity=(0, 0))

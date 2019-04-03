@@ -47,7 +47,8 @@ PolarCoord = namedtuple("PolarCoord", "length rot_y")
 Point = namedtuple("Point", "polar")
 
 # Marker class
-MarkerBase = namedtuple( "Marker", "info res centre timestamp" )
+ORIENTATION = namedtuple( "ORIENTATION", "rot_x rot_y rot_z" )
+MarkerBase = namedtuple( "Marker", "info res centre timestamp orientation" )
 class Marker(MarkerBase):
     def __init__(self, *a, **kwd):
         # Aliases

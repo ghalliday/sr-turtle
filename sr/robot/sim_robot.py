@@ -6,7 +6,7 @@ import time, exceptions
 from math import pi, sin, cos, degrees, hypot, atan2
 
 from .game_object import GameObject
-from .vision import Marker, Point, PolarCoord, create_marker_info_by_type, MARKER_ROBOT
+from .vision import Marker, Point, PolarCoord, create_marker_info_by_type, MARKER_ARENA, MARKER_ROBOT, ORIENTATION
 
 import pypybox2d
 
@@ -54,7 +54,7 @@ class Motor:
                .format(self.serialnum)
 
 class SimRobot(GameObject):
-    width = 0.45
+    width = 0.4
 
     surface_name = 'sr/robot.png'
 
@@ -94,7 +94,8 @@ class SimRobot(GameObject):
         self._body = None
         self.zone = 0
         super(SimRobot, self).__init__(simulator.arena)
-        self.motors = [Motor(self)]
+#        self.motors = [Motor(self)]
+        self.motors = [0,0,0]
         make_body = simulator.arena._physics_world.create_body
         half_width = self.width * 0.5
         with self.arena.physics_lock:
@@ -130,9 +131,11 @@ class SimRobot(GameObject):
         with self.lock, self.arena.physics_lock:
             half_width = self.width * 0.5
             # left wheel
-            self._apply_wheel_force(-half_width, self.motors[0].m0.power)
+#            self._apply_wheel_force(-half_width, self.motors[0].m0.power)
+            self._apply_wheel_force(-half_width, self.motors[1])
             # right wheel
-            self._apply_wheel_force( half_width, self.motors[0].m1.power)
+ #           self._apply_wheel_force( half_width, self.motors[0].m1.power)
+            self._apply_wheel_force( half_width, self.motors[2])
             # kill the lateral velocity
             right_normal = self._body.get_world_vector((0, 1))
             lateral_vel = (right_normal.dot(self._body.linear_velocity) *
@@ -190,7 +193,7 @@ class SimRobot(GameObject):
             heading = self.heading
 
         acq_time = time.time()
-
+        print "At  {0} @({1},{2}) heading{3}".format(acq_time, x, y, degrees(heading))
         MOTION_BLUR_SPEED_THRESHOLD = 5
 
         def robot_moving(o):
@@ -218,10 +221,26 @@ class SimRobot(GameObject):
             polar_coord = PolarCoord(length=hypot(rel_x, rel_y), \
                                      rot_y=degrees(atan2(rel_y, rel_x) - heading))
             # TODO: Check polar coordinates are the right way around
+            rot_y = degrees(o.heading - (heading-pi));
+            if rot_y < -180:
+                rot_y += 360
+            if rot_y > 180:
+                rot_y -= 360
+
+            if (o.marker_info != None and
+                o.marker_info.marker_type == MARKER_ARENA):
+                if (rot_y < -90 or rot_y > 90):
+                    print "rot_y {0} out of range".format(rot_y)
+                else:
+                    print "rot_y {0} degrees marker {1}".format(rot_y, o.marker_info.offset)
+
+
             return Marker(info=o.marker_info,
                           centre=Point(polar_coord),
                           res=res,
-                          timestamp=acq_time)
+                          timestamp=acq_time,
+                          orientation = ORIENTATION(0, rot_y, 0)
+                          )
 
         return [marker_map(obj) for obj in self.arena.objects if object_filter(obj)]
 
